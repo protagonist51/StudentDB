@@ -1,0 +1,132 @@
+<div>
+  <div class="alert alert-success alert-dismissable" *ngIf="showSuccessMessage">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    <strong>Success!</strong> New Student Record has been added.
+  </div>
+  <button type="button" class="btn btn-success buttons" data-toggle="modal" data-target="#myModal">Add Student</button>
+  <div style="overflow:auto">
+    <table class="table table-bordered table-striped">
+      <thead class="studentHeader">
+      <tr>
+        <td>Roll Number</td>
+        <td>First Name</td>
+        <td>Last Name</td>
+        <td>Gender</td>
+        <td>Contact Number</td>
+        <td>Email</td>
+        <td>Department</td>
+        <td>Address</td>
+        <td></td>
+        <td></td>
+      </tr>
+      </thead>
+      <tbody>
+
+      <tr *ngFor="let student of studentList;let i=index">
+        <td>{{student.rollNumber}}</td>
+        <td>{{student.firstName}}</td>
+        <td>{{student.lastName}}</td>
+        <td>{{student.gender}}</td>
+        <td>{{student.contactNum}}</td>
+        <td>{{student.email}}</td>
+        <td>{{student.department}}</td>
+        <td>{{student.address}}</td>
+        <td>
+          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal"
+                  (click)="editStudent(student)">Edit
+          </button>
+        </td>
+        <td>
+          <button type="button" class="btn btn-danger" (click)="deleteStudent(student)">Delete</button>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <form #studentForm="ngForm" novalidate>
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" #closeModal>&times;</button>
+              <h4 class="modal-title" *ngIf="studentAdd">Add Student</h4>
+              <h4 class="modal-title" *ngIf="studentUpdate">Update Student</h4>
+            </div>
+            <div class="modal-body">
+              <label path="rollnumber" class="sr-only">Roll Number</label>
+              <input type="text" id="rollnum" #rollNum="ngModel" class="form-control" [readonly]="disableRollNum"
+                     [(ngModel)]="studentObj.rollNumber" name="rollnumber"
+                     placeholder="Student Roll Number" required [autofocus]="studentAdd"/>
+              <small *ngIf="!rollNum.valid && formSubmitted" class="text-danger">
+                Roll Number is required.
+              </small>
+              <br>
+              <label path="firstName" class="sr-only">First Name</label>
+              <input type="text" id="firstname" class="form-control" #fname="ngModel" [(ngModel)]="studentObj.firstName"
+                     name="firstname" placeholder="Student First Name" required/>
+              <small *ngIf="!fname.valid && formSubmitted" class="text-danger">
+                First Name is required.
+              </small>
+              <br>
+              <label path="lastName" class="sr-only">Last Name</label>
+              <input type="text" id="lastname" class="form-control" #lname="ngModel" [(ngModel)]="studentObj.lastName"
+                     name="lastname" placeholder="Student Last Name" required/>
+              <small *ngIf="!lname.valid && formSubmitted" class="text-danger">
+                Last Name is required.
+              </small>
+              <br>
+              <h5><span class="label label-default">Gender</span>&nbsp;&nbsp;
+                <input type="radio" name="gender" id="male" value="Male" [(ngModel)]="studentObj.gender">
+                <label for="male">Male</label>&nbsp;&nbsp;
+                <input type="radio" name="gender" id="female" value="Female" [(ngModel)]="studentObj.gender">
+                <label for="female">Female</label><br>
+              </h5>
+
+              <label path="contactNumber" class="sr-only">Contact Number</label>
+              <input type="number" id="contactnum"  class="form-control"
+                     [(ngModel)]="studentObj.contactNum" name="contactNum" placeholder="Student Contact Number"
+                     pattern="[0-9]*"
+                     minlength="10"
+                     maxlength="10"
+                     #mobile="ngModel" required>
+                <small class="text-danger" [hidden]="!mobile.hasError('minlength')">Mobile should be 10 digit</small>
+                <small class="text-danger" [hidden]="!mobile.hasError('pattern')">Mobile numberr should be only numbers</small>
+              <small *ngIf="!mobile.valid && formSubmitted" class="text-danger">
+                Contact Number is required.
+              </small>
+              <br>
+              <label path="email" class="sr-only">Email Id</label>
+              <input type="email" id="inputEmail" class="form-control" [(ngModel)]="studentObj.email" name="email"
+                     placeholder="Student Email address"/>
+              <label for="sel1">Department:</label>
+              <select class="form-control" id="sel1" [(ngModel)]="studentObj.department" name="dept">
+
+
+                <!--In Angular 4 selected="true" not working currently-->
+                <option value="" disabled="true" selected="true">Select Branch</option>
+                <option *ngFor="let dept of departmentList" [ngValue]="dept">{{dept}}</option>
+              </select><br>
+
+              <textarea class="form-control" [(ngModel)]="studentObj.address" name="address" rows="3"
+                        placeholder="Student Adddress" id="comment"></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" *ngIf="studentAdd"
+                      (click)="addStudent(studentObj, studentForm.valid)">Add
+              </button>
+              <button type="button" class="btn btn-primary" *ngIf="studentUpdate"
+                      (click)="updateStudent(studentObj, studentForm.valid)">Update
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+</div>
